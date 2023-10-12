@@ -1,5 +1,11 @@
 /* Add some global styles here! */
 
+html {
+  background: url(images/background.svg);
+  min-height: 100vh;
+  font-size: 16px;
+}
+
 :root {
   --red: rgb(208, 67, 12);
   --base-bg: #f1f3f5;

@@ -15,19 +15,19 @@ async function login() {
 </script>
 
 <template>
-  <form class="pure-form pure-form-aligned" @submit.prevent="login">
-    <h3>Login</h3>
-    <fieldset>
-      <div class="pure-control-group">
-        <label for="aligned-name">Username</label>
+  <form class="pure-form pure-form-aligned center" @submit.prevent="login" id="login-form">
+    <!-- <h3>Login</h3> -->
+    <fieldset id="login">
+      <div class="pure-control-group center">
+        <!-- <label for="aligned-name">Username</label> -->
         <input v-model.trim="username" type="text" id="aligned-name" placeholder="Username" required />
       </div>
-      <div class="pure-control-group">
-        <label for="aligned-password">Password</label>
+      <div class="pure-control-group center">
+        <!-- <label for="aligned-password">Password</label> -->
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
       </div>
-      <div class="pure-controls">
-        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+      <div class="pure-controls center">
+        <button type="submit" class="pure-button pure-button-primary submit">Submit</button>
       </div>
     </fieldset>
   </form>
@@ -38,4 +38,42 @@ h3 {
   display: flex;
   justify-content: center;
 }
+
+
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.pure-control-group input{
+  font-size: 16px;
+  min-width: 20.625rem;
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+}
+
+.submit {
+  font-size: 16px;
+  min-width: 20.625rem;
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+}
+
+.pure-control-group div {
+  font-size: 16px;
+  min-width: 20.625;
+}
+
+.pure-control-group label {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pure-controls.center {
+  margin: 1.5rem auto 0.5rem auto;
+}
+
 </style>

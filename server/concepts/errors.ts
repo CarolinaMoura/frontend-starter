@@ -31,3 +31,10 @@ export class NotAllowedError extends FormattableError {
 export class NotFoundError extends FormattableError {
   public readonly HTTP_CODE = 404;
 }
+/**
+ * Corresponds to creating a resource that would create a conflict
+ * with the already existing resources.
+ */
+export class ConflictError extends FormattableError {
+  public readonly HTTP_CODE = 409;
+}
