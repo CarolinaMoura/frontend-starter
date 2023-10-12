@@ -39,8 +39,6 @@ h3 {
   justify-content: center;
 }
 
-
-
 .center {
   display: flex;
   justify-content: center;
