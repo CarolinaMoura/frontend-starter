@@ -9,14 +9,14 @@ const { loginUser, updateSession } = useUserStore();
 
 async function login() {
   await loginUser(username.value, password.value);
-  void updateSession();
+  await updateSession();
   void router.push({ name: "Home" });
 }
 </script>
 
 <template>
-  <form class="pure-form pure-form-aligned center" @submit.prevent="login" id="login-form">
-    <!-- <h3>Login</h3> -->
+  <form class="pure-form pure-form-aligned" @submit.prevent="login" id="login-form">
+    <h3>Login</h3>
     <fieldset id="login">
       <div class="pure-control-group center">
         <!-- <label for="aligned-name">Username</label> -->
@@ -44,7 +44,7 @@ h3 {
   justify-content: center;
 }
 
-.pure-control-group input{
+.pure-control-group input {
   font-size: 16px;
   min-width: 20.625rem;
   padding: 0.875rem 1rem;
@@ -73,5 +73,4 @@ h3 {
 .pure-controls.center {
   margin: 1.5rem auto 0.5rem auto;
 }
-
 </style>

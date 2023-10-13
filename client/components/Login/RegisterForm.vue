@@ -10,25 +10,25 @@ const { createUser, loginUser, updateSession } = useUserStore();
 async function register() {
   await createUser(username.value, password.value);
   await loginUser(username.value, password.value);
-  void updateSession();
-  void router.push({ name: "Home" });
+  await updateSession();
+  await router.push({ name: "Home" });
 }
 </script>
 
 <template>
   <form class="pure-form pure-form-aligned" @submit.prevent="register">
-    <h3>Register User</h3>
-    <fieldset>
-      <div class="pure-control-group">
-        <label for="aligned-name">Username</label>
+    <h3>Register now!</h3>
+    <fieldset id="login">
+      <div class="pure-control-group center">
+        <!-- <label for="aligned-name">Username</label> -->
         <input v-model.trim="username" type="text" id="aligned-name" placeholder="Username" required />
       </div>
-      <div class="pure-control-group">
-        <label for="aligned-password">Password</label>
+      <div class="pure-control-group center">
+        <!-- <label for="aligned-password">Password</label> -->
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
       </div>
-      <div class="pure-controls">
-        <button type="submit" class="pure-button pure-button-primary">Register</button>
+      <div class="pure-controls center">
+        <button type="submit" class="pure-button pure-button-primary submit">Register</button>
       </div>
     </fieldset>
   </form>
@@ -38,5 +38,40 @@ async function register() {
 h3 {
   display: flex;
   justify-content: center;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.pure-control-group input {
+  font-size: 16px;
+  min-width: 20.625rem;
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+}
+
+.submit {
+  font-size: 16px;
+  min-width: 20.625rem;
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+}
+
+.pure-control-group div {
+  font-size: 16px;
+  min-width: 20.625;
+}
+
+.pure-control-group label {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pure-controls.center {
+  margin: 1.5rem auto 0.5rem auto;
 }
 </style>
