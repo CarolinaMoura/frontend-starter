@@ -11,8 +11,8 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
   <HeaderNavbar />
   <main>
     <section>
-      <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
-      <h1 v-else>Please login!</h1>
+      <!-- <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
+      <h1 v-else>Please login!</h1> -->
     </section>
     <PostListComponent />
   </main>
@@ -21,5 +21,12 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 <style scoped>
 h1 {
   text-align: center;
+}
+
+main {
+  background-color: white;
+  width: 60%;
+  margin:auto;
+  min-height: 100vh;
 }
 </style>
