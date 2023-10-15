@@ -24,14 +24,14 @@ const emptyForm = () => {
 
 <template>
   <form @submit.prevent="createPost(content)">
-    <label for="content">Post Contents:</label>
-    <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
+    <textarea id="content" v-model="content" placeholder="Create a post!" required > </textarea>
     <button type="submit" class="pure-button-primary pure-button">Create Post</button>
   </form>
 </template>
 
 <style scoped>
 form {
+  margin-top: 3rem;
   background-color: var(--base-bg);
   border-radius: 1em;
   display: flex;
@@ -48,4 +48,10 @@ textarea {
   border-radius: 4px;
   resize: none;
 }
+
+textarea:focus-visible {
+  outline: 2px solid #157F03;
+  border: none;
+}
+
 </style>

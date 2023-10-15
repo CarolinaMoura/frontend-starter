@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
-import { fetchy } from "../../utils/fetchy";
 import { formatDate } from "@/utils/formatDate";
+import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
+import { fetchy } from "../../utils/fetchy";
 
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
+const profilePic = ref("");
+const thumbnail = ref("");
+const prefix=ref("data:image/png;base64,");
 
 const deletePost = async () => {
   try {
@@ -16,11 +20,36 @@ const deletePost = async () => {
   }
   emit("refreshPosts");
 };
+
+const getProfilePicture = async() => {
+  const user = await fetchy(`api/users/${props.post.author}`, 'GET');
+  profilePic.value = user.picture;
+}
+
+const getThumbnail = async() => {
+  const imageSrc = await fetchy(`api/thumbnails/${encodeURIComponent(props.post.content)}`, 'GET');
+  thumbnail.value = imageSrc;
+}
+
+onBeforeMount(async () => {
+  await getProfilePicture();
+  await getThumbnail();
+  console.log(thumbnail.value);
+});
 </script>
 
 <template>
+  <section id="identifiers">
+  <img :src="profilePic" class="pfp" />
   <p class="author">{{ props.post.author }}</p>
+  </section>
+  <section id="content-section">
+    <div id="thumbnail">
+      <img v-if="thumbnail !== ''" :src="prefix+thumbnail"/>
+      <p v-else>Loading...</p>
+  </div>
   <p>{{ props.post.content }}</p>
+  </section>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
@@ -36,6 +65,46 @@ const deletePost = async () => {
 <style scoped>
 p {
   margin: 0em;
+  flex:2;
+}
+
+#thumbnail {
+  border: 1px solid black;
+  width: 10rem;
+  height: 10rem;
+  flex: 1;
+  float: right;
+}
+
+#thumbnail > img {
+  width: 100%;
+  height: 100%;
+}
+
+#content-section {
+  padding: 4rem;
+  padding-top: 2rem;
+  
+}
+
+#identifiers {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media(max-width:1000px){
+  #thumbnail {
+    float: none;
+    margin:auto;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.pfp {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
 }
 
 .author {

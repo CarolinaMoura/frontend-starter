@@ -3,6 +3,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import HeaderNavbar from "../components/Header/HeaderNavbar.vue";
 import PostListComponent from "../components/Post/PostListComponent.vue";
+import ResourcesComponent from '../components/Resources/ResourcesComponent.vue';
 
 const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 </script>
@@ -10,11 +11,12 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 <template>
   <HeaderNavbar />
   <main>
-    <section>
-      <!-- <h1 v-if="isLoggedIn">Welcome {{ currentUsername }}!</h1>
-      <h1 v-else>Please login!</h1> -->
-    </section>
+    <div>
     <PostListComponent />
+  </div>
+  <div>
+    <ResourcesComponent />
+  </div>
   </main>
 </template>
 
@@ -24,9 +26,11 @@ h1 {
 }
 
 main {
-  background-color: white;
-  width: 60%;
+  background: url('../assets/images/background.svg');
+  width: 100%;
   margin:auto;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>

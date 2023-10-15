@@ -8,7 +8,13 @@ const password = ref("");
 const { loginUser, updateSession } = useUserStore();
 
 async function login() {
+  try {
   await loginUser(username.value, password.value);
+  } catch {
+    alert('Username or password incorrect!');
+    const input = document.querySelector('#aligned-password') as HTMLInputElement;
+    input.value = "";
+  }
   await updateSession();
   void router.push({ name: "Home" });
 }

@@ -2,17 +2,21 @@ import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
 import { BadValuesError, NotAllowedError, NotFoundError } from "./errors";
 
+const defaultUserProfile =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTEiIGhlaWdodD0iOTEiIHZpZXdCb3g9IjAgMCA5MSA5MSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjkxIiBoZWlnaHQ9IjkxIiBmaWxsPSIjQ0JFODk2Ii8+CjxwYXRoIGQ9Ik04MC4wODIxIDkwLjM1N0M3OC4zNDY4IDkwLjc2NDcgNjQuNjgzMiA5MC42NTIxIDQ1LjkzOTEgOTAuNzY0N0MyNy4xOTUxIDkwLjg3NzMgMTIuMjAzOSA5MC43NjQ3IDEyLjIwMzkgOTAuNzY0N0MxMi4wOTEzIDcyLjAyMDYgMjcuMTk1MSA1Ni43MzQzIDQ1LjkzOTEgNTYuNjIxN0M2NC42ODMyIDU2LjUwOTEgNzkuOTY5NSA3MS42MTI5IDgwLjA4MjEgOTAuMzU3WiIgZmlsbD0iIzE1N0YwMyIvPgo8Y2lyY2xlIGN4PSI0NS44NDY4IiBjeT0iMzgiIHI9IjIwIiBmaWxsPSIjMTU3RjAzIi8+Cjwvc3ZnPgo=";
+
 export interface UserDoc extends BaseDoc {
   username: string;
   password: string;
+  picture: string;
 }
 
 export default class UserConcept {
   public readonly users = new DocCollection<UserDoc>("users");
 
-  async create(username: string, password: string) {
+  async create(username: string, password: string, picture = defaultUserProfile) {
     await this.canCreate(username, password);
-    const _id = await this.users.createOne({ username, password });
+    const _id = await this.users.createOne({ username, password, picture });
     return { msg: "User created successfully!", user: await this.users.readOne({ _id }) };
   }
 

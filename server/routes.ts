@@ -194,6 +194,11 @@ class Routes {
     return Thumbnail.createThumbnail(content);
   }
 
+  @Router.get("/thumbnails/:content")
+  async getImage(content: string) {
+    return Thumbnail.createThumbnail(content);
+  }
+
   // ---- Highlights ----
   @Router.post("/highlights")
   async createHighlight(post: ObjectId, views: number) {
