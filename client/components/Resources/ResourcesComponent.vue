@@ -1,9 +1,7 @@
 <template>
-    <main>
-        aaaaaaaaaaa
-    </main>
+  <div id="resources-container">
+    <h1>Resources</h1>
+  </div>
 </template>
 
-<style>
-
-</style>
+<style></style>

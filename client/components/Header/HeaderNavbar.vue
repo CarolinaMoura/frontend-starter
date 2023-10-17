@@ -16,9 +16,7 @@ const { toast } = storeToRefs(useToastStore());
     <nav>
       <div class="title">
         <img src="../../assets/images/logo.svg" />
-        <RouterLink :to="{ name: 'Home' }">
-          
-        </RouterLink>
+        <RouterLink :to="{ name: 'Home' }"> </RouterLink>
       </div>
       <ul>
         <li>
