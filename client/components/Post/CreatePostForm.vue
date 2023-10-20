@@ -24,7 +24,11 @@ const emptyForm = () => {
 
 <template>
   <form @submit.prevent="createPost(content)">
-    <textarea id="content" v-model="content" placeholder="Create a post!" required > </textarea>
+    <div>
+      <button onclick="">Add tags</button>
+    </div>
+    <textarea id="content" v-model="content" placeholder="Create a post!" required > 
+    </textarea>
     <button type="submit" class="pure-button-primary pure-button">Create Post</button>
   </form>
 </template>
