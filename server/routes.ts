@@ -158,6 +158,10 @@ class Routes {
   async getAllPostsWithTag(name: string): Promise<ObjectId[]> {
     return Tag.getAllWithTag(name);
   }
+  @Router.get("/tags")
+  async getAllTags(): Promise<String[]> {
+    return (await Tag.getAllTags()).map((tag) => tag.name);
+  }
   @Router.post("/tags")
   async createTag(name: string): Promise<ObjectId> {
     return Tag.createTag(name);
@@ -183,7 +187,7 @@ class Routes {
     const feedId = await Feed.getFeedByUser(user);
     const feedPosts: FeedDoc = await Feed.getFeedById(feedId);
     for (const post of feedPosts.orderedPosts) {
-      Views.update(post, 1);
+      await Views.update(post, 1);
     }
     return feedPosts;
   }

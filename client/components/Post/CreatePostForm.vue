@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import SearchBar from "../SearchBar.vue";
 
 const content = ref("");
 const emit = defineEmits(["refreshPosts"]);
+const allTags = ref();
 
 const createPost = async (content: string) => {
   try {
@@ -20,15 +22,20 @@ const createPost = async (content: string) => {
 const emptyForm = () => {
   content.value = "";
 };
+
+const getTags = () => {
+  return fetchy("api/tags", "GET");
+};
+
+onBeforeMount(async () => {
+  allTags.value = await getTags();
+});
 </script>
 
 <template>
   <form @submit.prevent="createPost(content)">
-    <div>
-      <button onclick="">Add tags</button>
-    </div>
-    <textarea id="content" v-model="content" placeholder="Create a post!" required > 
-    </textarea>
+    <SearchBar :items="allTags.value" />
+    <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
     <button type="submit" class="pure-button-primary pure-button">Create Post</button>
   </form>
 </template>
@@ -54,8 +61,7 @@ textarea {
 }
 
 textarea:focus-visible {
-  outline: 2px solid #157F03;
+  outline: 2px solid #157f03;
   border: none;
 }
-
 </style>

@@ -32,6 +32,10 @@ export default class TagConcept {
       .then((att) => att.map((elt) => elt.attachedTo));
   }
 
+  public async getAllTags() {
+    return this.tags.readMany({});
+  }
+
   // If the post already has that tag, simply return that attachment
   // Otherwise, create a new attachment
   public async createAttachment(tagName: string, object: ObjectId): Promise<ObjectId> {
