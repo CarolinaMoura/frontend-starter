@@ -8,6 +8,7 @@ import { FeedDoc } from "./concepts/feed";
 import { PostDoc, PostOptions } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
+import { findRepeatedTags } from "./external_apis/chat";
 import Responses from "./responses";
 
 class Routes {
@@ -162,7 +163,11 @@ class Routes {
   async getAllTags(): Promise<String[]> {
     return (await Tag.getAllTags()).map((tag) => tag.name);
   }
-  @Router.post("/tags")
+  @Router.get("/tags/repeated/:newTag")
+  async findRepeatedTag(newTag: string): Promise<String> {
+    return await findRepeatedTags(newTag);
+  }
+  @Router.post("/tags/:name")
   async createTag(name: string): Promise<ObjectId> {
     return Tag.createTag(name);
   }
@@ -187,7 +192,7 @@ class Routes {
     const feedId = await Feed.getFeedByUser(user);
     const feedPosts: FeedDoc = await Feed.getFeedById(feedId);
     for (const post of feedPosts.orderedPosts) {
-      await Views.update(post, 1);
+      Views.update(post, 1);
     }
     return feedPosts;
   }

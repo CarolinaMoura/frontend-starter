@@ -23,18 +23,21 @@ const emptyForm = () => {
   content.value = "";
 };
 
-const getTags = () => {
-  return fetchy("api/tags", "GET");
+const mostra = ref(false);
+const getTags = async () => {
+  allTags.value = await fetchy("api/tags", "GET");
+  mostra.value = true;
 };
 
 onBeforeMount(async () => {
-  allTags.value = await getTags();
+  await getTags();
+  console.log(allTags.value);
 });
 </script>
 
 <template>
   <form @submit.prevent="createPost(content)">
-    <SearchBar :items="allTags.value" />
+    <SearchBar v-if="mostra" :items="allTags" />
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
     <button type="submit" class="pure-button-primary pure-button">Create Post</button>
   </form>

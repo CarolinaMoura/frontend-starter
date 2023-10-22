@@ -37,6 +37,7 @@ h1 {
 
 .floater {
   width: 15%;
+  max-height: 30vh;
 }
 
 main {

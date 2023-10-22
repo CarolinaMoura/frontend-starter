@@ -8,5 +8,8 @@
     "source.organizeImports": true
   },
   "typescript.preferences.importModuleSpecifier": "project-relative",
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.semi": true,
+  "prettier.useTabs": true,
+  "editor.formatOnSave": true
 }
