@@ -76,7 +76,7 @@ const createTag = async (newTag: string) => {
   padding: 0;
 }
 
-#wait-while-processing {
+#wait-while-processing > div {
   display: flex;
   flex-direction: column;
   justify-content: center;

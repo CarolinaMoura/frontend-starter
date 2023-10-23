@@ -5,13 +5,22 @@ import SearchBar from "../SearchBar.vue";
 
 const content = ref("");
 const emit = defineEmits(["refreshPosts"]);
-const allTags = ref();
+let allTags: Array<string> = [];
+let canAddTags = ref<Array<string>>([]);
+let listaTags = ref<Array<string>>([]);
+const mostra = ref(false);
 
-const createPost = async (content: string) => {
+const createPost = async (content: string, tags: Array<string>) => {
   try {
-    await fetchy("api/posts", "POST", {
+    const postId = await fetchy("api/posts", "POST", {
       body: { content },
     });
+    console.log(postId);
+    for (const tag of tags) {
+      await fetchy("api/tags/attachments", "POST", {
+        body: [{ is_delete: false }, { post: postId }, { tag }],
+      });
+    }
   } catch (_) {
     return;
   }
@@ -21,24 +30,50 @@ const createPost = async (content: string) => {
 
 const emptyForm = () => {
   content.value = "";
+  listaTags.value = [];
+  canAddTags.value = [...allTags];
 };
 
-const mostra = ref(false);
 const getTags = async () => {
-  allTags.value = await fetchy("api/tags", "GET");
-  mostra.value = true;
+  allTags = await fetchy("api/tags", "GET");
 };
 
 onBeforeMount(async () => {
   await getTags();
-  console.log(allTags.value);
+  canAddTags.value = allTags.map((tag) => tag);
+  mostra.value = true;
 });
+
+const addTag = (tag: string) => {
+  listaTags.value = [...listaTags.value, tag];
+  canAddTags.value = allTags.filter((tag: String) => {
+    for (const tagg of listaTags.value) {
+      if (tag === tagg) {
+        return false;
+      }
+    }
+    return true;
+  });
+};
+
+const removeTag = (tag: string) => {
+  if (!listaTags.value.includes(tag)) {
+    console.error("Tag isn't selected");
+  }
+  listaTags.value = listaTags.value.filter((sel) => sel !== tag);
+  canAddTags.value = [...canAddTags.value, tag];
+};
 </script>
 
 <template>
-  <form @submit.prevent="createPost(content)">
-    <SearchBar v-if="mostra" :items="allTags" />
+  <form @submit.prevent="createPost(content, listaTags)">
+    <SearchBar v-if="mostra" :items="canAddTags" @addItem="addTag" />
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
+    <ul id="selected-tags">
+      <li v-for="(tag, ix) in listaTags" :key="ix">
+        <button id="remove-tag-button" @click="removeTag(tag)" @submit.prevent="">{{ tag }} <img src="../../assets/images/x.svg" /></button>
+      </li>
+    </ul>
     <button type="submit" class="pure-button-primary pure-button">Create Post</button>
   </form>
 </template>
@@ -52,6 +87,29 @@ form {
   flex-direction: column;
   gap: 0.5em;
   padding: 1em;
+}
+
+#selected-tags {
+  list-style-type: none;
+  padding-left: 0;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+#remove-tag-button {
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.3rem;
+  padding: 0.2rem;
+}
+
+#remove-tag-button > img {
+  width: 16px;
+  height: 16px;
 }
 
 textarea {

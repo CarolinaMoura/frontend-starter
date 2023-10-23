@@ -15,6 +15,12 @@ const router = createRouter({
       name: "Home",
       component: HomeView,
       meta: { requiresAuth: true },
+      beforeEnter: (to, from) => {
+        const { isLoggedIn } = storeToRefs(useUserStore());
+        if (!isLoggedIn.value) {
+          return { name: "Login" };
+        }
+      },
     },
     {
       path: "/setting",

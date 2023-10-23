@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HeaderNavbar from "../components/Header/HeaderNavbar.vue";
+import MiddleFloater from "../components/MiddleFloater.vue";
 import PostListComponent from "../components/Post/PostListComponent.vue";
 import LeftFloater from "../components/ProfileFloater/LeftFloater.vue";
 import ResourcesComponent from "../components/Resources/ResourcesComponent.vue";
@@ -10,7 +11,7 @@ import ResourcesComponent from "../components/Resources/ResourcesComponent.vue";
   <main>
     <div id="profile" class="floater"><LeftFloater /></div>
     <div id="main-feed">
-      <PostListComponent />
+      <MiddleFloater><PostListComponent /></MiddleFloater>
     </div>
     <div id="resources" class="floater">
       <ResourcesComponent />
@@ -33,6 +34,7 @@ h1 {
 
 #main-feed {
   width: 60%;
+  background-color: transparent;
 }
 
 .floater {

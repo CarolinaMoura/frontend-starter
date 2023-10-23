@@ -1,21 +1,31 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
+import { ref, watch } from "vue";
 const text = ref("");
 const props = defineProps({ items: Array<String> });
 const displaySearchResults = ref(false);
-const items = ref([]);
+const items = ref<Array<String>>(props.items?.sort());
+const allItems = ref<Array<String>>(props.items?.sort());
+const emit = defineEmits(["addItem"]);
 
 const findResults = () => {
   if (text.value === "") {
     items.value = props.items?.sort();
   }
-  items.value = props.items?.filter((item) => item.startsWith(text.value));
+  items.value = allItems.value.sort().filter((item) => item.startsWith(text.value));
 };
 
-onBeforeMount(() => {
-  console.log("ja entrei");
-  items.value = props.items?.sort();
-});
+const handleClick = (item: String) => {
+  emit("addItem", item);
+  displaySearchResults.value = false;
+};
+
+watch(
+  () => props.items,
+  (newItems) => {
+    items.value = newItems?.sort();
+    allItems.value = newItems?.sort();
+  },
+);
 </script>
 <template>
   <div id="search">
@@ -25,7 +35,7 @@ onBeforeMount(() => {
         <form @submit.prevent=""><input @click="() => (displaySearchResults = true)" v-model="text" placeholder="Search tags..." @input="findResults" /></form>
         <div v-if="displaySearchResults" id="search-results">
           <ul>
-            <li v-for="item in items">
+            <li v-for="item in items" @click="handleClick(item)" :key="item">
               {{ item }}
             </li>
           </ul>
