@@ -6,6 +6,7 @@ import { Feed, Friend, Post, Tag, Thumbnail, User, Views, WebSession } from "./a
 import { BadValuesError, UnauthenticatedError } from "./concepts/errors";
 import { FeedDoc } from "./concepts/feed";
 import { PostDoc, PostOptions } from "./concepts/post";
+import { AttachmentTagDoc } from "./concepts/tag";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import { findRepeatedTags } from "./external_apis/chat";
@@ -34,6 +35,11 @@ class Routes {
     return await User.create(username, password);
   }
 
+  @Router.get("/users/id/:_id")
+  async getUserById(_id: ObjectId) {
+    return User.getUserById(_id);
+  }
+
   @Router.patch("/users")
   async updateUser(session: WebSessionDoc, update: Partial<UserDoc>) {
     const user = WebSession.getUser(session);
@@ -49,9 +55,13 @@ class Routes {
 
   @Router.post("/login")
   async logIn(session: WebSessionDoc, username: string, password: string) {
-    const u = await User.authenticate(username, password);
-    WebSession.start(session, u._id);
-    return { msg: "Logged in!" };
+    try {
+      const u = await User.authenticate(username, password);
+      WebSession.start(session, u._id);
+      return { msg: "Logged in!" };
+    } catch {
+      return { msg: "Username or password is incorrect!" };
+    }
   }
 
   @Router.post("/logout")
@@ -70,6 +80,11 @@ class Routes {
       posts = await Post.getPosts({});
     }
     return Responses.posts(posts);
+  }
+
+  @Router.get("/posts/id")
+  async getPostsById(id: ObjectId) {
+    return Post.getById(id);
   }
 
   @Router.post("/posts")
@@ -156,8 +171,14 @@ class Routes {
 
   // ---- Tags ----
   @Router.get("/tags/:name")
-  async getAllPostsWithTag(name: string): Promise<ObjectId[]> {
-    return Tag.getAllWithTag(name);
+  async getAllPostsWithTag(name: string): Promise<Array<PostDoc | null>> {
+    try {
+      const allPostsWithTag = await Tag.getAllWithTag(name);
+      const actualPosts = await Promise.all(allPostsWithTag.map(async (post) => await Responses.post(await Post.getById(post))));
+      return actualPosts;
+    } catch {
+      return [];
+    }
   }
   @Router.get("/tags")
   async getAllTags(): Promise<String[]> {
@@ -167,7 +188,7 @@ class Routes {
   async findRepeatedTag(newTag: string): Promise<String> {
     return await findRepeatedTags(newTag);
   }
-  @Router.post("/tags/:name")
+  @Router.post("/tags")
   async createTag(name: string): Promise<ObjectId> {
     return Tag.createTag(name);
   }
@@ -175,7 +196,11 @@ class Routes {
   async deleteTag(name: string): Promise<DeleteResult> {
     return Tag.deleteTag(name);
   }
-  @Router.post("/tags/attachments")
+  @Router.get("/tags/attachments/:post")
+  async checkPostAttachments(post: ObjectId): Promise<AttachmentTagDoc[]> {
+    return Tag.getAllTagsFromPost(post);
+  }
+  @Router.post("/tags/attachments/:tag/:post/:is_delete")
   async createAttachment(session: WebSessionDoc, tag: string, post: ObjectId, is_delete: string) {
     const user = WebSession.getUser(session);
     await Post.isAuthor(user, post).catch((e) => {
@@ -230,8 +255,11 @@ class Routes {
       throw new BadValuesError("Input is an invalid date");
     }
     const parsedDate = new Date(date);
-    parsedDate.setHours(0, 0, 0, 0);
+    console.log(parsedDate);
+    parsedDate.setDate(parsedDate.getDate() + 1);
+    parsedDate.setHours(0, 0, 0, 1);
     const endOfDay = new Date(date);
+    endOfDay.setDate(endOfDay.getDate() + 1);
     endOfDay.setHours(23, 59, 59, 999);
     const posts = await Post.getPosts({
       dateUpdated: {

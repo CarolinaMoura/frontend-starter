@@ -4,11 +4,13 @@ import { formatDate } from "@/utils/formatDate";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import LoaderAnimated from "../LoaderAnimated.vue";
 const props = defineProps(["post"]);
 const emit = defineEmits(["editPost", "refreshPosts"]);
 const { currentUsername } = storeToRefs(useUserStore());
 const profilePic = ref("");
 const thumbnail = ref("");
+const tags = ref("");
 const prefix = ref("data:image/png;base64,");
 
 const deletePost = async () => {
@@ -30,9 +32,17 @@ const getThumbnail = async () => {
   thumbnail.value = imageSrc;
 };
 
+const getTags = async () => {
+  const attachments = await fetchy(`api/tags/attachments/${props.post._id}`, "GET");
+  tags.value = attachments.map((att) => {
+    return att.tagName.startsWith("#") ? att.tagName : "#" + att.tagName;
+  });
+};
+
 onBeforeMount(async () => {
   await getProfilePicture();
   await getThumbnail();
+  await getTags();
 });
 </script>
 
@@ -44,19 +54,27 @@ onBeforeMount(async () => {
   <section id="content-section">
     <div id="thumbnail">
       <img v-if="thumbnail !== ''" :src="prefix + thumbnail" />
-      <p v-else>Loading...</p>
+      <div v-else style="margin: 1rem; display: flex; justify-content: center; align-items: center; flex-direction: column">
+        <p style="color: #157f03; text-align: center">Don't worry! This will take only a few seconds...</p>
+        <LoaderAnimated />
+      </div>
     </div>
     <p>{{ props.post.content }}</p>
   </section>
-  <div class="base">
-    <menu v-if="props.post.author == currentUsername">
-      <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
-      <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
-    </menu>
-    <article class="timestamp">
-      <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
-      <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
-    </article>
+  <div class="grande-base">
+    <div class="tags">
+      <button v-for="tag in tags" :key="tag" class="tag-button">{{ tag }}</button>
+    </div>
+    <div class="base">
+      <menu v-if="props.post.author == currentUsername">
+        <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
+        <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
+      </menu>
+      <article class="timestamp">
+        <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
+        <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
+      </article>
+    </div>
   </div>
 </template>
 
@@ -64,6 +82,16 @@ onBeforeMount(async () => {
 p {
   margin: 0em;
   flex: 2;
+}
+
+.tags {
+  margin-bottom: 1.5rem;
+}
+
+.tag-button {
+  padding: 0.3rem;
+  border: 1px solid black;
+  border-radius: 10px;
 }
 
 #thumbnail {

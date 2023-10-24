@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { Transition, TransitionGroup, onBeforeMount, ref, watch } from "vue";
+import { v4 as uuidv4 } from "uuid";
+import { onBeforeMount, ref, watch } from "vue";
 import { fetchy } from "../utils/fetchy";
 import slicing from "../utils/slicing";
+import LoaderAnimated from "./LoaderAnimated.vue";
 
 interface IHighlight {
   count: number;
@@ -12,6 +14,7 @@ interface IPost {
   author?: string;
   content: string;
   thumbnail: string;
+  username?: string;
 }
 
 /*
@@ -36,7 +39,8 @@ const loadSlideShow = async (date: string) => {
     withoutPicture.map(async (post) => {
       const thumbnail = (await fetchy(`api/thumbnails/${post.content}`, "GET")) as string;
       const prefix = "data:image/png;base64,";
-      return { ...post, thumbnail: prefix + thumbnail };
+      const postData = await fetchy(`api/users/id/${post.author}`, "GET");
+      return { ...post, username: postData.username, thumbnail: prefix + thumbnail };
     }),
   );
   const qttSlides = Math.min(5, slidesArray.value.length);
@@ -60,27 +64,30 @@ const jump = (index: number) => {
   active.value = index;
 };
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   loading.value = true;
-  loadSlideShow(data.value);
+  await loadSlideShow(data.value);
   loading.value = false;
 });
 </script>
 <template>
-  <div id="app">
+  <div id="app" v-if="slidesArray.length > 0">
     <div class="slides">
       <TransitionGroup v-if="!loading" name="slide" mode="out-in">
         <Transition name="slide-fade" enter-class="slide-in" leave-class="slide-out">
           <div class="slide-content" v-if="slidesArray.length > 0" :key="active">
-            <div class="name">
+            <div class="name" :key="uuidv4()">
               <!-- <h3>{{ slidesArray[active - 1].author }}</h3> -->
-              <h3>says</h3>
+              <h3>
+                <span style="color: #157f03; font-weight: bold"> {{ slidesArray[active - 1].username ?? "Anonymous" }} </span> says:
+              </h3>
               <p>{{ slidesArray[active - 1].content }}</p>
             </div>
             <img :src="slidesArray[active - 1].thumbnail" width="200" height="200" />
           </div>
         </Transition>
       </TransitionGroup>
+      <LoaderAnimated v-else />
     </div>
     <span class="prev" @click="move(-1)">
       <i class="fa fa-chevron-left" aria-hidden="true"></i>
@@ -89,9 +96,10 @@ onBeforeMount(() => {
       <i class="fa fa-chevron-right" aria-hidden="true"></i>
     </span>
     <ul class="dots">
-      <li v-for="(dot, index) in slides" :class="{ active: index + 1 === active }" @click="jump(index)"></li>
+      <li v-for="(dot, index) in slides" :key="uuidv4()" :class="{ active: index + 1 === active }" @click="jump(index)"></li>
     </ul>
   </div>
+  <p v-else>Seems like nobody posted anything on {{ props.date }}</p>
 </template>
 
 <style scoped lang="scss">
@@ -240,5 +248,9 @@ button {
 
 .slide-content {
   min-height: 30vh;
+}
+
+h3 {
+  margin-bottom: 1rem;
 }
 </style>

@@ -12,14 +12,12 @@ const mostra = ref(false);
 
 const createPost = async (content: string, tags: Array<string>) => {
   try {
-    const postId = await fetchy("api/posts", "POST", {
+    const post = await fetchy("api/posts", "POST", {
       body: { content },
     });
-    console.log(postId);
+    const postId = post.post._id;
     for (const tag of tags) {
-      await fetchy("api/tags/attachments", "POST", {
-        body: [{ is_delete: false }, { post: postId }, { tag }],
-      });
+      await fetchy(`api/tags/attachments/${tag}/${postId}/false`, "POST");
     }
   } catch (_) {
     return;

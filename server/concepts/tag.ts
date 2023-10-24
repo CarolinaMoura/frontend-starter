@@ -1,4 +1,4 @@
-import { DeleteResult, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
 
 export interface AttachmentTagDoc extends BaseDoc {
@@ -19,21 +19,36 @@ export default class TagConcept {
   private readonly tags = new DocCollection<TagDoc>("tags");
 
   public async getAllWithTag(tagName: string) {
-    const tagId = await this.getTagByName(tagName);
-    return this.attachments
-      .readMany(
-        { tag: tagId },
-        {
-          projection: {
-            attachedTo: 1,
-          },
-        },
-      )
-      .then((att) => att.map((elt) => elt.attachedTo));
+    const tagId = (await this.getTagByName(tagName))._id;
+
+    const allResults = await this.attachments.readMany({});
+    const toReturn = allResults
+      .filter((att) => {
+        return att.tag.equals(tagId);
+      })
+      .map((att) => att.attachedTo);
+    return toReturn;
   }
 
   public async getAllTags() {
     return this.tags.readMany({});
+  }
+
+  public async getAllTagsFromPost(postId: ObjectId) {
+    const attachments = await this.attachments.readMany({ attachedTo: postId });
+    return Promise.all(
+      attachments.map(async (attachments) => {
+        const tagName = await this.tags.readOne({ _id: attachments.tag });
+        return {
+          _id: attachments.attachedTo,
+          attachedTo: attachments.attachedTo,
+          dateCreated: attachments.dateCreated,
+          dateUpdated: attachments.dateUpdated,
+          tag: attachments.tag,
+          tagName: tagName?.name,
+        };
+      }),
+    );
   }
 
   // If the post already has that tag, simply return that attachment

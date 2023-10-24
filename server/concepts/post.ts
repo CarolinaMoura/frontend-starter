@@ -53,6 +53,10 @@ export default class PostConcept {
     }
   }
 
+  async getById(_id: ObjectId) {
+    return this.posts.readOne({ _id });
+  }
+
   private sanitizeUpdate(update: Partial<PostDoc>) {
     // Make sure the update cannot change the author.
     const allowedUpdates = ["content", "options"];

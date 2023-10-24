@@ -32,7 +32,7 @@ watch(
     <div id="navigation">
       <img v-if="displaySearchResults" src="../assets/images/go-back.svg" width="32" height="32" @click="() => (displaySearchResults = false)" />
       <div id="search-stuff">
-        <form @submit.prevent=""><input @click="() => (displaySearchResults = true)" v-model="text" placeholder="Search tags..." @input="findResults" /></form>
+        <form @submit.prevent=""><input @click="() => (displaySearchResults = true)" v-model="text" placeholder="Add tags..." @input="findResults" /></form>
         <div v-if="displaySearchResults" id="search-results">
           <ul>
             <li v-for="item in items" @click="handleClick(item)" :key="item">

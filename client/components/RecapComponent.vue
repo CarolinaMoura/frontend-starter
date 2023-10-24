@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import getCurrDate from "./../utils/getCurrDate";
+import getYesterday from "./../utils/getCurrDate";
 import SlideShow from "./SlideShow.vue";
 </script>
 <template>
@@ -7,7 +7,7 @@ import SlideShow from "./SlideShow.vue";
     <h3>See what you missed!</h3>
     <div id="slide-show-and-date">
       <p>Yesterday</p>
-      <SlideShow :date="getCurrDate()" />
+      <SlideShow :date="getYesterday()" />
     </div>
   </div>
 </template>
