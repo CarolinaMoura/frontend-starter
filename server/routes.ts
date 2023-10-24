@@ -54,11 +54,11 @@ class Routes {
     for (const post of allPosts) {
       const allTags = await Tag.getAllTagsFromPost(post._id);
       for (const tag of allTags) {
-        Tag.deleteAttachment(tag.tagName ?? "", post._id);
+        await Tag.deleteAttachment(tag.tagName ?? "", post._id);
       }
     }
     for (const post of allPosts) {
-      Post.delete(post._id);
+      await Post.delete(post._id);
     }
     return await User.delete(user);
   }
@@ -194,7 +194,7 @@ class Routes {
   async findRepeatedTag(newTag: string): Promise<String> {
     return await findRepeatedTags(newTag);
   }
-  @Router.post("/tags")
+  @Router.post("/tags/:name")
   async createTag(name: string): Promise<ObjectId> {
     return Tag.createTag(name);
   }
@@ -223,7 +223,7 @@ class Routes {
     const feedId = await Feed.getFeedByUser(user);
     const feedPosts: FeedDoc = await Feed.getFeedById(feedId);
     for (const post of feedPosts.orderedPosts) {
-      Views.update(post, 1);
+      await Views.update(post, 1);
     }
     return feedPosts;
   }
@@ -261,7 +261,6 @@ class Routes {
       throw new BadValuesError("Input is an invalid date");
     }
     const parsedDate = new Date(date);
-    console.log(parsedDate);
     parsedDate.setDate(parsedDate.getDate() + 1);
     parsedDate.setHours(0, 0, 0, 1);
     const endOfDay = new Date(date);

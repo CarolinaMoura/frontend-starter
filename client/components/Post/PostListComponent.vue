@@ -9,6 +9,7 @@ import { onBeforeMount, ref } from "vue";
 import SearchPostForm from "./SearchPostForm.vue";
 
 const { isLoggedIn } = storeToRefs(useUserStore());
+const props = defineProps(["tags"]);
 
 const loaded = ref(false);
 let posts = ref<Array<Record<string, string>>>([]);
@@ -64,7 +65,7 @@ onBeforeMount(async () => {
       </div>
     </div>
     <section v-if="isLoggedIn">
-      <CreatePostForm @refreshPosts="getPosts" />
+      <CreatePostForm @refreshPosts="getPosts" :tags="props.tags" />
     </section>
     <p v-if="searchTag">The result of your search:</p>
     <section class="posts" v-if="loaded && posts.length !== 0">

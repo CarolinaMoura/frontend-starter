@@ -4,8 +4,8 @@ import { fetchy } from "../../utils/fetchy";
 import SearchBar from "../SearchBar.vue";
 
 const content = ref("");
+const props = defineProps(["tags"]);
 const emit = defineEmits(["refreshPosts"]);
-let allTags: Array<string> = [];
 let canAddTags = ref<Array<string>>([]);
 let listaTags = ref<Array<string>>([]);
 const mostra = ref(false);
@@ -29,22 +29,17 @@ const createPost = async (content: string, tags: Array<string>) => {
 const emptyForm = () => {
   content.value = "";
   listaTags.value = [];
-  canAddTags.value = [...allTags];
-};
-
-const getTags = async () => {
-  allTags = await fetchy("api/tags", "GET");
+  canAddTags.value = [...props.tags];
 };
 
 onBeforeMount(async () => {
-  await getTags();
-  canAddTags.value = allTags.map((tag) => tag);
+  canAddTags.value = props.tags.map((tag) => tag);
   mostra.value = true;
 });
 
 const addTag = (tag: string) => {
   listaTags.value = [...listaTags.value, tag];
-  canAddTags.value = allTags.filter((tag: String) => {
+  canAddTags.value = props.tags.filter((tag: String) => {
     for (const tagg of listaTags.value) {
       if (tag === tagg) {
         return false;
@@ -56,7 +51,7 @@ const addTag = (tag: string) => {
 
 const removeTag = (tag: string) => {
   if (!listaTags.value.includes(tag)) {
-    console.error("Tag isn't selected");
+    throw new Error("Tag isn't selected");
   }
   listaTags.value = listaTags.value.filter((sel) => sel !== tag);
   canAddTags.value = [...canAddTags.value, tag];
@@ -65,7 +60,7 @@ const removeTag = (tag: string) => {
 
 <template>
   <form @submit.prevent="createPost(content, listaTags)">
-    <SearchBar v-if="mostra" :items="canAddTags" @addItem="addTag" />
+    <SearchBar :items="canAddTags" @addItem="addTag" />
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
     <ul id="selected-tags">
       <li v-for="(tag, ix) in listaTags" :key="ix">

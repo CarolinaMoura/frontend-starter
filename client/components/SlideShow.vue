@@ -27,6 +27,7 @@ const slides = ref<number>(5);
 const slidesArray = ref<IPost[]>([]);
 const active = ref<number>(1);
 const loading = ref(true);
+const novissimaData = ref("");
 
 const loadSlideShow = async (date: string) => {
   const posts = await fetchy("api/highlights", "GET", {
@@ -45,6 +46,12 @@ const loadSlideShow = async (date: string) => {
   );
   const qttSlides = Math.min(5, slidesArray.value.length);
   slides.value = qttSlides;
+};
+
+const newDate = async () => {
+  loading.value = true;
+  await loadSlideShow(novissimaData.value);
+  loading.value = false;
 };
 
 watch(data, async (newDate) => {
@@ -99,11 +106,20 @@ onBeforeMount(async () => {
       <li v-for="(dot, index) in slides" :key="uuidv4()" :class="{ active: index + 1 === active }" @click="jump(index)"></li>
     </ul>
   </div>
-  <p v-else>Seems like nobody posted anything on {{ props.date }}</p>
+  <p v-else>Seems like nobody posted anything on {{ props.date }} :(</p>
+  <form id="choose-new-date" @submit.prevent="newDate">
+    <label for="dateInput">Select a Date:</label>
+    <input type="date" id="dateInput" name="dateInput" v-model="novissimaData" />
+    <button type="submit">go</button>
+  </form>
 </template>
 
 <style scoped lang="scss">
 $primary: #157f03;
+
+#choose-new-date {
+  margin-top: 3rem;
+}
 
 * {
   margin: 0;

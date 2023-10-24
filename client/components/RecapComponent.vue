@@ -6,7 +6,6 @@ import SlideShow from "./SlideShow.vue";
   <div id="main-content">
     <h3>See what you missed!</h3>
     <div id="slide-show-and-date">
-      <p>Yesterday</p>
       <SlideShow :date="getYesterday()" />
     </div>
   </div>

@@ -1,17 +1,30 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import HeaderNavbar from "../components/Header/HeaderNavbar.vue";
 import MiddleFloater from "../components/MiddleFloater.vue";
 import PostListComponent from "../components/Post/PostListComponent.vue";
 import LeftFloater from "../components/ProfileFloater/LeftFloater.vue";
 import RecapComponent from "../components/RecapComponent.vue";
 import ResourcesComponent from "../components/Resources/ResourcesComponent.vue";
+import { fetchy } from "../utils/fetchy";
 
 const currentTab = ref("Feed");
+const tags = ref("");
+const mostra = ref(false);
 
 const changeTab = (tab: string) => {
   currentTab.value = tab;
 };
+
+const getTags = async () => {
+  mostra.value = false;
+  tags.value = await fetchy("api/tags", "GET");
+  mostra.value = true;
+};
+
+onBeforeMount(async () => {
+  await getTags();
+});
 </script>
 
 <template>
@@ -21,13 +34,13 @@ const changeTab = (tab: string) => {
     <div id="main-feed">
       <MiddleFloater @changeTab="changeTab">
         <div id="main-flow">
-          <PostListComponent v-if="currentTab === 'Feed'" />
+          <PostListComponent :tags="tags" v-if="currentTab === 'Feed' && mostra" />
           <RecapComponent v-if="currentTab === 'Recap'" />
         </div>
       </MiddleFloater>
     </div>
     <div id="resources" class="floater">
-      <ResourcesComponent />
+      <ResourcesComponent @refreshTags="getTags" />
     </div>
   </main>
 </template>

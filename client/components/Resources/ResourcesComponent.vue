@@ -8,6 +8,7 @@ const isCreation = ref(true);
 const text = ref("");
 const notFetched = ref(true);
 const ans = ref("");
+const emit = defineEmits(["refreshTags"]);
 
 const toggleTag = async () => {
   isCreation.value = true;
@@ -23,6 +24,7 @@ const createTag = async (newTag: string) => {
   if (partial[0] == "1") {
     const actualTag = partial.split("1")[1];
     await fetchy(`api/tags/${actualTag}`, "POST");
+    emit("refreshTags");
     ans.value = `Tag "${actualTag}" created with success`;
   } else {
     ans.value = `That isn't a valid tag. Check if there's a similar existent tag or if you mispelled your word.`;
