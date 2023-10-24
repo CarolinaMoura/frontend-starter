@@ -241,7 +241,16 @@ class Routes {
     });
     const views = await Views.sort(posts.map((post) => post._id));
     views.reverse();
-    return views;
+    const returnArray = [];
+    for (const view of views) {
+      for (const post of posts) {
+        if (post._id.equals(view.target)) {
+          returnArray.push(post);
+        }
+      }
+    }
+
+    return returnArray;
   }
 }
 
