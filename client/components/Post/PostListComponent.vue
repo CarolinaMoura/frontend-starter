@@ -20,7 +20,7 @@ async function getPosts(author?: string) {
   let query: Record<string, string> = author !== undefined ? { author } : {};
   let postResults;
   try {
-    postResults = await fetchy("api/posts", "GET", { query });
+    postResults = await fetchy("api/posts", "GET", { query, alert: false });
   } catch (_) {
     return;
   }
@@ -66,6 +66,7 @@ onBeforeMount(async () => {
     <section v-if="isLoggedIn">
       <CreatePostForm @refreshPosts="getPosts" />
     </section>
+    <p v-if="searchTag">The result of your search:</p>
     <section class="posts" v-if="loaded && posts.length !== 0">
       <article v-for="post in posts" :key="post._id">
         <PostComponent v-if="editing !== post._id" :post="post" @refreshPosts="getPosts" @editPost="updateEditing" />

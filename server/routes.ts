@@ -50,18 +50,24 @@ class Routes {
   async deleteUser(session: WebSessionDoc) {
     const user = WebSession.getUser(session);
     WebSession.end(session);
+    const allPosts = await Post.getByAuthor(user);
+    for (const post of allPosts) {
+      const allTags = await Tag.getAllTagsFromPost(post._id);
+      for (const tag of allTags) {
+        Tag.deleteAttachment(tag.tagName ?? "", post._id);
+      }
+    }
+    for (const post of allPosts) {
+      Post.delete(post._id);
+    }
     return await User.delete(user);
   }
 
   @Router.post("/login")
   async logIn(session: WebSessionDoc, username: string, password: string) {
-    try {
-      const u = await User.authenticate(username, password);
-      WebSession.start(session, u._id);
-      return { msg: "Logged in!" };
-    } catch {
-      return { msg: "Username or password is incorrect!" };
-    }
+    const u = await User.authenticate(username, password);
+    WebSession.start(session, u._id);
+    return { msg: "Logged in!" };
   }
 
   @Router.post("/logout")
@@ -171,7 +177,7 @@ class Routes {
 
   // ---- Tags ----
   @Router.get("/tags/:name")
-  async getAllPostsWithTag(name: string): Promise<Array<PostDoc | null>> {
+  async getAllPostsWithTag(name: string): Promise<Array<Responses | null>> {
     try {
       const allPostsWithTag = await Tag.getAllWithTag(name);
       const actualPosts = await Promise.all(allPostsWithTag.map(async (post) => await Responses.post(await Post.getById(post))));

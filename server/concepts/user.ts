@@ -60,7 +60,7 @@ export default class UserConcept {
   async authenticate(username: string, password: string) {
     const user = await this.users.readOne({ username, password });
     if (!user) {
-      throw new NotAllowedError("Username or password is incorrect.");
+      throw new NotAllowedError("Username or password is incorrect");
     }
     return { msg: "Successfully authenticated.", _id: user._id };
   }

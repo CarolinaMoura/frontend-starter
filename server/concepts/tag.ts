@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { DeleteResult, ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
 
 export interface AttachmentTagDoc extends BaseDoc {

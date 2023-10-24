@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import LoginForm from "@/components/Login/LoginForm.vue";
 import RegisterForm from "@/components/Login/RegisterForm.vue";
+import { storeToRefs } from "pinia";
 import { ref } from "vue";
+import { useToastStore } from "../stores/toast";
+const { toast } = storeToRefs(useToastStore());
 
 const isRegister = ref(false);
 </script>
 
 <template>
+  <article v-if="toast !== null" class="toast" :class="toast.style">
+    <p>{{ toast.message }}</p>
+  </article>
   <main class="row">
     <!-- <h1>Please login or register!</h1> -->
+
     <div id="container">
       <button @click="isRegister = !isRegister" id="toggle-registration">
         <span v-if="isRegister">Already have an account?</span>
@@ -28,6 +35,8 @@ const isRegister = ref(false);
 </template>
 
 <style>
+@import "../assets/toast.css";
+
 .row {
   font-size: 16px;
   width: 45%;

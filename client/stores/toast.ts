@@ -11,7 +11,7 @@ export const useToastStore = defineStore(
   () => {
     const toast = ref<Toast>(null);
 
-    const showToast = (t: Toast, timeoutMs = 1500) => {
+    const showToast = async (t: Toast, timeoutMs = 1500) => {
       toast.value = t;
       setTimeout(hideToast, timeoutMs);
     };
