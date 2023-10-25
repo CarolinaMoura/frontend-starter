@@ -115,6 +115,7 @@ class Routes {
     Post.isAuthor(user, _id)
       .then(() => Post.update(_id, update))
       .catch(() => new UnauthenticatedError("User is not author of the post"));
+    return { msg: "Post updated successfully!" };
   }
 
   @Router.delete("/posts/:_id")
