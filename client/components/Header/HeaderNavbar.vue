@@ -15,7 +15,7 @@ const { toast } = storeToRefs(useToastStore());
   <header>
     <nav>
       <div class="title">
-        <img src="../../assets/images/logo.svg" />
+        <img src="../../assets/images/logo.svg" id="logo" />
         <RouterLink :to="{ name: 'Home' }"> </RouterLink>
       </div>
       <ul>
@@ -23,7 +23,7 @@ const { toast } = storeToRefs(useToastStore());
           <RouterLink class="option" :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home <img src="../../assets/images/home.svg" /> </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink class="option" :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings <img src="../../assets/images/settings.svg" /> </RouterLink>
+          <RouterLink class="option" :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Advanced <img src="../../assets/images/settings.svg" /> </RouterLink>
         </li>
         <li v-else>
           <RouterLink class="option" :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
@@ -44,9 +44,6 @@ nav {
   background-color: #3c9f2a;
   display: flex;
   align-items: center;
-  border-radius: 50px;
-  border-bottom-left-radius: 50px;
-  border-bottom-right-radius: 50px;
 }
 
 .option {
@@ -90,5 +87,9 @@ ul {
 
 .underline {
   text-decoration: underline;
+}
+
+#logo {
+  height: 5em;
 }
 </style>

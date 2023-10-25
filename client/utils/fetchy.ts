@@ -49,7 +49,7 @@ export async function fetchy(
   const result = await response.json();
 
   if (options.alert && result.msg) {
-    useToastStore().showToast({ message: result.msg, style: response.ok ? "success" : "error" });
+    await useToastStore().showToast({ message: result.msg, style: response.ok ? "success" : "error" });
   }
 
   if (!response.ok) {

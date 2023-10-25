@@ -22,6 +22,22 @@ const getTags = async () => {
   mostra.value = true;
 };
 
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}
+
+window.onscroll = function () {
+  var button = document.getElementById("scrollToTopButton") as HTMLButtonElement;
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    button.style.display = "block";
+  } else {
+    button.style.display = "none";
+  }
+};
+
 onBeforeMount(async () => {
   await getTags();
 });
@@ -43,6 +59,7 @@ onBeforeMount(async () => {
       <ResourcesComponent @refreshTags="getTags" />
     </div>
   </main>
+  <button id="scrollToTopButton" @click="scrollToTop">Top</button>
 </template>
 
 <style scoped>
@@ -74,6 +91,19 @@ h1 {
   border-radius: 15px;
 }
 
+#scrollToTopButton {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 15px;
+}
 main {
   background: url("../assets/images/background.svg");
   width: 100%;
