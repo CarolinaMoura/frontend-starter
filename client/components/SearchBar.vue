@@ -36,7 +36,7 @@ watch(
         <form @submit.prevent=""><input @click="() => (displaySearchResults = true)" v-model="text" placeholder="Add tags..." @input="findResults" /></form>
         <div v-if="displaySearchResults" id="search-results">
           <ul>
-            <li v-for="item in items" @click="handleClick(item)" :key="item[0]">
+            <li v-for="item in items" @click="handleClick(item)" :key="item">
               {{ item }}
             </li>
           </ul>

@@ -41,8 +41,8 @@ const getTags = async () => {
 
 onBeforeMount(async () => {
   await getProfilePicture();
-  await getThumbnail();
   await getTags();
+  await getThumbnail();
 });
 </script>
 

@@ -66,7 +66,6 @@ class Routes {
   @Router.post("/login")
   async logIn(session: WebSessionDoc, username: string, password: string) {
     const u = await User.authenticate(username, password);
-    console.log(u);
     WebSession.start(session, u._id);
     return { msg: "Logged in!" };
   }
@@ -126,6 +125,10 @@ class Routes {
     for (const elt of users) {
       await Feed.removeFromFeed(elt._id, _id);
     }
+    const allTags = await Tag.getAllTagsFromPost(_id);
+    for (const tag of allTags) {
+      await Tag.deleteAttachment(tag.tagName ?? "", _id);
+    }
     return Post.delete(_id);
   }
 
@@ -182,6 +185,7 @@ class Routes {
     try {
       const allPostsWithTag = await Tag.getAllWithTag(name);
       const actualPosts = await Promise.all(allPostsWithTag.map(async (post) => await Responses.post(await Post.getById(post))));
+      console.log(actualPosts);
       return actualPosts;
     } catch {
       return [];
