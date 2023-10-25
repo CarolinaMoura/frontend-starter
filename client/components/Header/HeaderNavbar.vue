@@ -20,13 +20,13 @@ const { toast } = storeToRefs(useToastStore());
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink class="option" :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home <img src="../../assets/images/home.svg" /> </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink class="option" :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings <img src="../../assets/images/settings.svg" /> </RouterLink>
         </li>
         <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
+          <RouterLink class="option" :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
         </li>
       </ul>
     </nav>
@@ -41,9 +41,21 @@ const { toast } = storeToRefs(useToastStore());
 
 nav {
   padding: 1em 2em;
-  background-color: lightgray;
+  background-color: #3c9f2a;
   display: flex;
   align-items: center;
+  border-radius: 50px;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+}
+
+.option > img {
+  padding: 0.6rem;
 }
 
 h1 {
