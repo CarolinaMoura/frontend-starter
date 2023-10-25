@@ -33,7 +33,7 @@ const emptyForm = () => {
 };
 
 onBeforeMount(async () => {
-  canAddTags.value = props.tags.map((tag) => tag);
+  canAddTags.value = props.tags.map((tag: string) => tag);
   mostra.value = true;
 });
 
@@ -60,7 +60,7 @@ const removeTag = (tag: string) => {
 
 <template>
   <form @submit.prevent="createPost(content, listaTags)">
-    <SearchBar :items="canAddTags" @addItem="addTag" />
+    <SearchBar :itemss="canAddTags" @addItem="addTag" />
     <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
     <ul id="selected-tags">
       <li v-for="(tag, ix) in listaTags" :key="ix">

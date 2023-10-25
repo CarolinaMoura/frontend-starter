@@ -34,7 +34,7 @@ const getThumbnail = async () => {
 
 const getTags = async () => {
   const attachments = await fetchy(`api/tags/attachments/${props.post._id}`, "GET");
-  tags.value = attachments.map((att) => {
+  tags.value = attachments.map((att: { tagName: string }) => {
     return att.tagName.startsWith("#") ? att.tagName : "#" + att.tagName;
   });
 };

@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 const text = ref("");
-const props = defineProps({ items: Array<String> });
+const props = defineProps({ itemss: Array<String> });
 const displaySearchResults = ref(false);
-const items = ref<Array<String>>(props.items?.sort());
-const allItems = ref<Array<String>>(props.items?.sort());
+const xxx = props.itemss ?? [];
+const items = ref<Array<String>>(xxx.sort());
+const allItems = ref<Array<String>>(xxx.sort());
 const emit = defineEmits(["addItem"]);
 
 const findResults = () => {
   if (text.value === "") {
-    items.value = props.items?.sort();
+    items.value = (props.itemss ?? []).sort();
   }
   items.value = allItems.value.sort().filter((item) => item.startsWith(text.value));
 };
@@ -20,10 +21,10 @@ const handleClick = (item: String) => {
 };
 
 watch(
-  () => props.items,
+  () => props.itemss,
   (newItems) => {
-    items.value = newItems?.sort();
-    allItems.value = newItems?.sort();
+    items.value = (newItems ?? []).sort();
+    allItems.value = (newItems ?? []).sort();
   },
 );
 </script>
@@ -35,7 +36,7 @@ watch(
         <form @submit.prevent=""><input @click="() => (displaySearchResults = true)" v-model="text" placeholder="Add tags..." @input="findResults" /></form>
         <div v-if="displaySearchResults" id="search-results">
           <ul>
-            <li v-for="item in items" @click="handleClick(item)" :key="item">
+            <li v-for="item in items" @click="handleClick(item)" :key="item[0]">
               {{ item }}
             </li>
           </ul>
